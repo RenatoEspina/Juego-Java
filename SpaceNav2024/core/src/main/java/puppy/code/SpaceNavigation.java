@@ -5,6 +5,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import puppy.code.Pantalla.PantallaMenu;
+
 public class SpaceNavigation extends Game {
     private String nombreJuego = "Space Navigation";
     private SpriteBatch batch;
