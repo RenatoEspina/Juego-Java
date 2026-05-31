@@ -48,7 +48,7 @@ public class PantallaVictoriaSecreta implements Screen {
 
         // Al hacer clic, volver al menú
         if (Gdx.input.isTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-            game.setScreen(new PantallaMenu(game));
+            game.setScreen(new PantallaMenuPrincipal(game));
             dispose();
         }
     }

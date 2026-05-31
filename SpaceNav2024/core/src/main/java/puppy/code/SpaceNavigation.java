@@ -5,7 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import puppy.code.Pantalla.PantallaMenu;
+import puppy.code.Pantalla.PantallaMenuPrincipal;
 
 public class SpaceNavigation extends Game {
     private String nombreJuego = "Space Navigation";
@@ -18,7 +18,7 @@ public class SpaceNavigation extends Game {
         batch = new SpriteBatch();
         font = new BitmapFont(); // usa Arial font x defecto
         font.getData().setScale(2f);
-        Screen ss = new PantallaMenu(this);
+        Screen ss = new PantallaMenuPrincipal(this);
         this.setScreen(ss);
     }
 
