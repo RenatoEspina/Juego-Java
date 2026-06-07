@@ -29,7 +29,7 @@ public class NaveEChico extends NaveBase {
         float vy = (float) Math.sin(anguloRadianes) * velocidadBala;
 
         BalaBase bala = new BalaEChico(bx, by, vx, vy, texturaBala);
-        bala.setRotation(spr.getRotation()); // encapsulamiento correcto
+        bala.setRotation(spr.getRotation());
 
         shootCooldown = shootCooldownMax;
         return bala;

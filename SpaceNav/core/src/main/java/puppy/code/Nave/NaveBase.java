@@ -14,7 +14,6 @@ import puppy.code.Pantalla.*;
 import puppy.code.Bala.*;
 
 public abstract class NaveBase implements Atacable, Actualizable {
-    // --- VARIABLES ---
     protected int vidas;
     protected Sprite spr;
     protected Texture texturaNave;
@@ -25,7 +24,6 @@ public abstract class NaveBase implements Atacable, Actualizable {
     protected PantallaJuego juego;
 
     protected boolean transformada = false;
-
     protected boolean destruida = false;
     protected boolean herido = false;
     protected int tiempoHerido = 0;
@@ -35,7 +33,6 @@ public abstract class NaveBase implements Atacable, Actualizable {
     protected float yVel = 0f;
     protected float MAX_SPEED = 500f;
     protected float ACCELERATION = 1500f;
-    // Fricción reducida: frenado más gradual y natural
     protected float FRICTION = 800f;
     protected float shootCooldown = 0f;
     protected float shootCooldownMax = 0.25f;
@@ -66,7 +63,6 @@ public abstract class NaveBase implements Atacable, Actualizable {
         if (shootCooldown > 0f) shootCooldown -= delta;
 
         if (!herido) {
-            // --- Entrada: flechas O wasd ---
             float ax = 0f, ay = 0f;
 
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT)  || Gdx.input.isKeyPressed(Input.Keys.A)) ax = -1f;
@@ -74,7 +70,6 @@ public abstract class NaveBase implements Atacable, Actualizable {
             if (Gdx.input.isKeyPressed(Input.Keys.UP)    || Gdx.input.isKeyPressed(Input.Keys.W)) ay =  1f;
             if (Gdx.input.isKeyPressed(Input.Keys.DOWN)  || Gdx.input.isKeyPressed(Input.Keys.S)) ay = -1f;
 
-            // Normalizar diagonal
             if (ax != 0f && ay != 0f) {
                 float inv = 1f / (float) Math.sqrt(2.0);
                 ax *= inv;
@@ -84,11 +79,9 @@ public abstract class NaveBase implements Atacable, Actualizable {
             xVel += ax * ACCELERATION * delta;
             yVel += ay * ACCELERATION * delta;
 
-            // Fricción solo cuando no hay input en ese eje
             if (ax == 0f) xVel = aplicarFriccion(xVel, delta);
             if (ay == 0f) yVel = aplicarFriccion(yVel, delta);
 
-            // Límite de velocidad
             float speed = (float) Math.sqrt(xVel * xVel + yVel * yVel);
             if (speed > MAX_SPEED) {
                 float scale = MAX_SPEED / speed;
@@ -104,7 +97,6 @@ public abstract class NaveBase implements Atacable, Actualizable {
             spr.setPosition(newX, newY);
             actualizarRotacion();
 
-            // Disparo: SPACE o CTRL izquierdo
             boolean disparar = Gdx.input.isKeyJustPressed(Input.Keys.SPACE)
                             || Gdx.input.isKeyJustPressed(Input.Keys.CONTROL_LEFT);
             if (disparar && shootCooldown <= 0f) {
@@ -219,7 +211,7 @@ public abstract class NaveBase implements Atacable, Actualizable {
     }
 
     private void actualizarRotacion() {
-        float eps = 2f; // umbral más bajo → respuesta más ágil
+        float eps = 2f;
         if (Math.abs(xVel) > eps || Math.abs(yVel) > eps) {
             float ang = (float) Math.toDegrees(Math.atan2(yVel, xVel));
             spr.setRotation(ang - 90f);

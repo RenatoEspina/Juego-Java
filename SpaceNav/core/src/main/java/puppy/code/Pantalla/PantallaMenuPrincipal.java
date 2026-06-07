@@ -52,7 +52,7 @@ public class PantallaMenuPrincipal implements Screen {
         // Menú en la parte baja de la pantalla, debajo del título de la imagen
         float centroX = camera.viewportWidth / 2f;
         // Bajado a ~300 para quedar por debajo del título gráfico de la portada
-        float inicioY = camera.viewportHeight / 2f - 200f;
+        float inicioY = camera.viewportHeight / 2f - 80f;
 
         menu = new MenuPrincipal(game.getFont(), centroX, inicioY, 700f, 100f, 25f);
 
