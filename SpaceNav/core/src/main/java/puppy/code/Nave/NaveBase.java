@@ -35,7 +35,8 @@ public abstract class NaveBase implements Atacable, Actualizable {
     protected float yVel = 0f;
     protected float MAX_SPEED = 500f;
     protected float ACCELERATION = 1500f;
-    protected float FRICTION = 1200f;
+    // Fricción reducida: frenado más gradual y natural
+    protected float FRICTION = 800f;
     protected float shootCooldown = 0f;
     protected float shootCooldownMax = 0.25f;
     protected int lastFacingDir = 1;
@@ -44,7 +45,8 @@ public abstract class NaveBase implements Atacable, Actualizable {
         return transformada;
     }
 
-    public NaveBase(int vidas, Texture texturaNave, Texture texturaNaveDebil, Texture texturaBala, Sound sonidoHerido, Sound sonidoBala, float x, float y) {
+    public NaveBase(int vidas, Texture texturaNave, Texture texturaNaveDebil, Texture texturaBala,
+                    Sound sonidoHerido, Sound sonidoBala, float x, float y) {
         this.spr = new Sprite(texturaNave);
         this.vidas = vidas;
         this.texturaNave = texturaNave;
@@ -64,12 +66,15 @@ public abstract class NaveBase implements Atacable, Actualizable {
         if (shootCooldown > 0f) shootCooldown -= delta;
 
         if (!herido) {
+            // --- Entrada: flechas O wasd ---
             float ax = 0f, ay = 0f;
-            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) ax = -1f;
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) ax = 1f;
-            if (Gdx.input.isKeyPressed(Input.Keys.UP)) ay = 1f;
-            if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) ay = -1f;
 
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)  || Gdx.input.isKeyPressed(Input.Keys.A)) ax = -1f;
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) ax =  1f;
+            if (Gdx.input.isKeyPressed(Input.Keys.UP)    || Gdx.input.isKeyPressed(Input.Keys.W)) ay =  1f;
+            if (Gdx.input.isKeyPressed(Input.Keys.DOWN)  || Gdx.input.isKeyPressed(Input.Keys.S)) ay = -1f;
+
+            // Normalizar diagonal
             if (ax != 0f && ay != 0f) {
                 float inv = 1f / (float) Math.sqrt(2.0);
                 ax *= inv;
@@ -79,9 +84,11 @@ public abstract class NaveBase implements Atacable, Actualizable {
             xVel += ax * ACCELERATION * delta;
             yVel += ay * ACCELERATION * delta;
 
+            // Fricción solo cuando no hay input en ese eje
             if (ax == 0f) xVel = aplicarFriccion(xVel, delta);
             if (ay == 0f) yVel = aplicarFriccion(yVel, delta);
 
+            // Límite de velocidad
             float speed = (float) Math.sqrt(xVel * xVel + yVel * yVel);
             if (speed > MAX_SPEED) {
                 float scale = MAX_SPEED / speed;
@@ -91,13 +98,16 @@ public abstract class NaveBase implements Atacable, Actualizable {
 
             float newX = spr.getX() + xVel * delta;
             float newY = spr.getY() + yVel * delta;
-            newX = MathUtils.clamp(newX, 0, Gdx.graphics.getWidth() - spr.getWidth());
+            newX = MathUtils.clamp(newX, 0, Gdx.graphics.getWidth()  - spr.getWidth());
             newY = MathUtils.clamp(newY, 0, Gdx.graphics.getHeight() - spr.getHeight());
 
             spr.setPosition(newX, newY);
             actualizarRotacion();
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && shootCooldown <= 0f) {
+            // Disparo: SPACE o CTRL izquierdo
+            boolean disparar = Gdx.input.isKeyJustPressed(Input.Keys.SPACE)
+                            || Gdx.input.isKeyJustPressed(Input.Keys.CONTROL_LEFT);
+            if (disparar && shootCooldown <= 0f) {
                 BalaBase bala = disparar();
                 if (bala != null && juego != null) {
                     juego.agregarBala(bala);
@@ -141,7 +151,6 @@ public abstract class NaveBase implements Atacable, Actualizable {
             }
             herido = true;
             tiempoHerido = tiempoHeridoMax;
-            if (sonidoHerido != null) sonidoHerido.play();
             if (vidas <= 0) destruida = true;
             return true;
         }
@@ -186,10 +195,10 @@ public abstract class NaveBase implements Atacable, Actualizable {
     }
 
     public BalaBase disparar() {
-        float bx = spr.getX() + spr.getWidth() / 2 - 5;
+        float bx = spr.getX() + spr.getWidth()  / 2 - 5;
         float by = spr.getY() + spr.getHeight() / 2 - 5;
 
-        float anguloGrados = spr.getRotation() + 90;
+        float anguloGrados   = spr.getRotation() + 90;
         float anguloRadianes = (float) Math.toRadians(anguloGrados);
 
         float velocidadBala = 400f;
@@ -197,24 +206,22 @@ public abstract class NaveBase implements Atacable, Actualizable {
         float vy = (float) Math.sin(anguloRadianes) * velocidadBala;
 
         BalaDefault bala = new BalaDefault(bx, by, vx, vy, texturaBala);
-        bala.setRotation(spr.getRotation()); // encapsulamiento correcto
+        bala.setRotation(spr.getRotation());
 
         shootCooldown = shootCooldownMax;
         return bala;
     }
 
     private float aplicarFriccion(float vel, float delta) {
-        if (vel > 0f) { vel -= FRICTION * delta; if (vel < 0f) vel = 0f; }
+        if (vel > 0f)      { vel -= FRICTION * delta; if (vel < 0f) vel = 0f; }
         else if (vel < 0f) { vel += FRICTION * delta; if (vel > 0f) vel = 0f; }
         return vel;
     }
 
     private void actualizarRotacion() {
-        float vx = xVel;
-        float vy = yVel;
-        float eps = 5f;
-        if (Math.abs(vx) > eps || Math.abs(vy) > eps) {
-            float ang = (float) Math.toDegrees(Math.atan2(vy, vx));
+        float eps = 2f; // umbral más bajo → respuesta más ágil
+        if (Math.abs(xVel) > eps || Math.abs(yVel) > eps) {
+            float ang = (float) Math.toDegrees(Math.atan2(yVel, xVel));
             spr.setRotation(ang - 90f);
         }
     }
@@ -223,17 +230,17 @@ public abstract class NaveBase implements Atacable, Actualizable {
         if (texturaNaveDebil == null) return;
         float p = (float) vidas / Math.max(1, getVidaMaximaEstimada());
         if (p <= 0.25f) spr.setRegion(texturaNaveDebil);
-        else spr.setRegion(texturaNave);
+        else            spr.setRegion(texturaNave);
     }
 
     protected int getVidaMaximaEstimada() { return Math.max(vidas, 10); }
 
     public void setJuego(PantallaJuego juego) { this.juego = juego; }
-    public Rectangle getArea() { return spr.getBoundingRectangle(); }
-    public void setVidas(int v) { vidas = v; }
-    public int getVidas() { return vidas; }
+    public Rectangle getArea()                { return spr.getBoundingRectangle(); }
+    public void setVidas(int v)               { vidas = v; }
+    public int  getVidas()                    { return vidas; }
     @Override public void recibirDano(int cantidad) { vidas -= cantidad; }
-    @Override public boolean estaDestruido() { return !herido && destruida; }
-    public boolean estaHerido() { return herido; }
+    @Override public boolean estaDestruido()        { return !herido && destruida; }
+    public boolean estaHerido()                     { return herido; }
     @Override public abstract void actualizarSprite();
 }

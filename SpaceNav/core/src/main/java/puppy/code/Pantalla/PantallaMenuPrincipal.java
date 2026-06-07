@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import puppy.code.GerentePuntuacion;
 import puppy.code.SpaceNavigation;
 import puppy.code.Menu.*;
+
 /**
  * Pantalla del menú principal con opciones navegables.
  *
@@ -48,15 +49,16 @@ public class PantallaMenuPrincipal implements Screen {
 
         fondo = new Texture(Gdx.files.internal("portada.png"));
 
-        // Menú centrado, con botones amplios para 1080p
+        // Menú en la parte baja de la pantalla, debajo del título de la imagen
         float centroX = camera.viewportWidth / 2f;
-        float inicioY = camera.viewportHeight / 2f + 100f;
+        // Bajado a ~300 para quedar por debajo del título gráfico de la portada
+        float inicioY = camera.viewportHeight / 2f - 200f;
 
         menu = new MenuPrincipal(game.getFont(), centroX, inicioY, 700f, 100f, 25f);
 
         menu.agregarOpcion("Nueva Partida", this::iniciarNuevaPartida);
-        menu.agregarOpcion("High Score", this::mostrarPuntaje);
-        menu.agregarOpcion("Salir", () -> Gdx.app.exit());
+        menu.agregarOpcion("High Score",    this::mostrarPuntaje);
+        menu.agregarOpcion("Salir",         () -> Gdx.app.exit());
     }
 
     // --- Acciones de las opciones ---
@@ -100,18 +102,11 @@ public class PantallaMenuPrincipal implements Screen {
                 mostrando_puntaje = false;
             }
         } else {
-            // Título del juego
-            game.getFont().getData().setScale(5f);
-            game.getFont().setColor(Color.CYAN);
-            game.getFont().draw(batch, "SPACE NAVIGATION",
-                camera.viewportWidth / 2f - 400f,
-                camera.viewportHeight - 100f);
-
-            // Subtítulo / instrucciones
+            // Instrucciones en la parte baja
             game.getFont().getData().setScale(2f);
             game.getFont().setColor(new Color(0.8f, 0.8f, 1f, 1f));
             game.getFont().draw(batch,
-                "↑↓ para navegar  |  ENTER / clic para seleccionar",
+                "\u2191\u2193 para navegar  |  ENTER / clic para seleccionar",
                 camera.viewportWidth / 2f - 380f,
                 150f);
 
@@ -130,8 +125,6 @@ public class PantallaMenuPrincipal implements Screen {
     private void dibujarPantallaHighScore() {
         int highScore = GerentePuntuacion.getInstance().getHighScore();
 
-        // Fondo oscuro del panel (overlay usando el truco de color)
-        // Panel centrado
         float panelX = camera.viewportWidth / 2f - 400f;
         float panelY = camera.viewportHeight / 2f - 150f;
 
