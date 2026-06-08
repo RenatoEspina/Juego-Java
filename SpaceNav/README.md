@@ -16,7 +16,7 @@ Este juego ha sido desarrollado en Java y puede ejecutarse descomprimiendo el ar
 1. **Descarga y descomprime el** archivo `.zip` en una carpeta de tu elección.
 2. Ejecuta el archivo "SpaceNav-1.0.0.jar", ubicado en la carpeta de lwjgl3/build/lib.
 3. Si no esta el archivo lo que puedes hacer es compilarlo con los comandos de "gradlew.bat build"/"gradlew build" en windows o "./gradlew build" en linux/macOs.
-4. 4. compilarlo con java -jar lwjgl3/build/libs/SpaceNav-1.0.0.jar
+4. compilarlo con java -jar lwjgl3/build/libs/SpaceNav-1.0.0.jar
 
 #### **En caso de error por java desactualizado seguir con el paso 3:**
 3. Ingresa a este link y continúa con la instalación:
