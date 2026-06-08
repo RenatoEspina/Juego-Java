@@ -6,7 +6,7 @@ Heaven Piercing SpaceShip es un juego de acción espacial desarrollado en Java u
 
 ## Cómo compilar y ejecutar
 
-Este juego ha sido desarrollado en Java y puede ejecutarse descomprimiendo el archivo .zip del proyecto y ejectutando el archivo "SpaceNav2024-1.0.0.jar". 
+Este juego ha sido desarrollado en Java y puede ejecutarse descomprimiendo el archivo .zip del proyecto y ejectutando el archivo "SpaceNav-1.0.0.jar". 
 
 ### Requisitos previos:
 - Tener java 17 o 21.
@@ -14,7 +14,9 @@ Este juego ha sido desarrollado en Java y puede ejecutarse descomprimiendo el ar
 ### Pasos para compilar y ejecutar:
 
 1. **Descarga y descomprime el** archivo `.zip` en una carpeta de tu elección.
-2. Ejecuta el archivo "SpaceNav2024-1.0.0.jar",
+2. Ejecuta el archivo "SpaceNav-1.0.0.jar", ubicado en la carpeta de lwjgl3/build/lib.
+3. Si no esta el archivo lo que puedes hacer es compilarlo con los comandos de "gradlew.bat build"/"gradlew build" en windows o "./gradlew build" en linux/macOs.
+4. 4. compilarlo con java -jar lwjgl3/build/libs/SpaceNav-1.0.0.jar
 
 #### **En caso de error por java desactualizado seguir con el paso 3:**
 3. Ingresa a este link y continúa con la instalación:
@@ -34,11 +36,7 @@ Este juego ha sido desarrollado en Java y puede ejecutarse descomprimiendo el ar
 ### Problemas conocidos:
 
 - En ocasiones los enemigos pueden aparecer fuera de la pantalla, impidiendo la continuidad del nivel y forzando a reiniciar el juego.
-
-### A mejorar:
-
-- Implementar un menú de pausa.
-- Añadir que enemigos específicos puedan disparar.
+- La nave puede llegar a sentirse tosca resultado del sistema de input frame a frame.
 
 ## Ejemplo de uso
 
@@ -52,7 +50,7 @@ Este juego ha sido desarrollado en Java y puede ejecutarse descomprimiendo el ar
 
 **Controles y Enfrentamiento**
 
-- Usa las teclas de dirección para mover la nave y la barra espaciadora para disparar, los enemigos aparecen automáticamente y se mueven con distintos patrones, además, luego de dejarlos a poca vida, cambiará su Sprite y el jugador podrá acoplarse a la nave enemiga acercandoce a esta, subiendo 2 vidas con cada fusión y mejorando la velocidad o el tipo de disparo del jugador, dependiendo del enemigo. 
+- Usa las teclas de dirección para mover la nave o wasd y la barra espaciadora para disparar, los enemigos aparecen automáticamente y se mueven con distintos patrones, además, luego de dejarlos a poca vida, cambiará su Sprite y el jugador podrá acoplarse a la nave enemiga acercandoce a esta, subiendo 2 vidas con cada fusión y mejorando la velocidad o el tipo de disparo del jugador, dependiendo del enemigo. 
 
 **Fin del juego**
 
